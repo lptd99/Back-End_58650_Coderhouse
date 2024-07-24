@@ -1,74 +1,45 @@
 const express = require("express");
+const { engine } = require("express-handlebars");
+const path = require("path");
+const pathView = path.join(`${__dirname}/views`);
+const productsRouter = require("./routes/products.router");
+const socketIO = require("socket.io");
 
-const ProductManager = require("./productManagerFS.js");
+const http = require("http");
 
 const app = express();
-const pMPath = "./src/products.json";
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+const server = http.createServer(app);
+const io = socketIO(server);
+
+app.engine("handlebars", engine());
+app.set("view engine", "handlebars");
+app.set("views", pathView);
+
+const staticPath = path.join(`${__dirname}/public`);
+
+app.use("/static", express.static(staticPath));
+
+app.use("/products", productsRouter);
+
+const ProductManager = require("./productManagerFS.js");
+const pMPath = path.join(`${__dirname}/data/products.json`);
 const pM = new ProductManager(pMPath);
+
 let products = [];
 
-app.get("/products", async (req, res) => {
+io.on("connection", async (socket) => {
   products = await pM.getProducts();
-  let { limit } = req.query;
-  if (!limit) return res.status(200).json(products);
-  let limitedProducts = products.slice(0, parseInt(limit));
-  return res.status(200).json(limitedProducts);
+  console.log("Usuário conectado");
+  socket.emit("products", products);
+  socket.on("new-product", async (data) => {
+    data.id = products[products.length - 1].id + 1;
+    products.push(data);
+    await pM.saveProductsToFile(products);
+    socket.broadcast.emit("products", products);
+  });
 });
 
-app.get("/products/:id", async (req, res) => {
-  try {
-    products = await pM.getProducts();
-    const { id } = req.params;
-    const product = products.find((product) => product.id === parseInt(id));
-    if (product) {
-      return res.status(200).json({ product });
-    } else {
-      return res.status(404).json({ message: "Produto não encontrado" });
-    }
-  } catch (error) {
-    return res.status(500).json({ message: "Erro na requisição." });
-  }
-});
-
-// app.get("/products/search", (req, res) => {
-//   const { title, description, price, thumbnail, stock, code } = req.query;
-//   let filteredProducts = products;
-//   console.log(title, description, price, thumbnail, stock, code);
-//   console.log(filteredProducts);
-//   if (title) {
-//     filteredProducts = filteredProducts.filter((product) =>
-//       product.title.toLowerCase().includes(title.toLowerCase())
-//     );
-//   }
-//   if (description) {
-//     filteredProducts = filteredProducts.filter((product) =>
-//       product.description.toLowerCase().includes(description.toLowerCase())
-//     );
-//   }
-//   if (price) {
-//     filteredProducts = filteredProducts.filter(
-//       (product) => product.price === parseFloat(price)
-//     );
-//   }
-//   if (thumbnail) {
-//     filteredProducts = filteredProducts.filter((product) =>
-//       product.thumbnail.toLowerCase().includes(thumbnail.toLowerCase())
-//     );
-//   }
-//   if (stock) {
-//     filteredProducts = filteredProducts.filter(
-//       (product) => product.stock === parseInt(stock)
-//     );
-//   }
-//   if (code) {
-//     filteredProducts = filteredProducts.filter(
-//       (product) => product.code === code
-//     );
-//   }
-//   if (filteredProducts.length === 0) {
-//     return res.status(404).json({ message: "Nenhum produto encontrado." });
-//   }
-//   return res.status(200).json(filteredProducts);
-// });
-
-module.exports = app;
+module.exports = server;

@@ -1,0 +1,61 @@
+<div class="container-fluid mt-3">
+    <h1 id="header">Products</h1>
+    <hr>
+    <div id="products"></div>
+    <form class="form-inline" onsubmit="return addProduct(this)" autocomplete="off">
+        <input type="text" id="title" class="form-control my-2 mr-2" placeholder="title" />
+        <input type="text" id="description" class="form-control my-2 mr-2" placeholder="description" />
+        <input type="number" id="price" class="form-control my-2 mr-2" placeholder="price">
+        <input type="text" id="stock" class="form-control my-2 mr-2" placeholder="stock">
+        <input type="text" id="thumbnail" class="form-control my-2 mr-2" placeholder="thumbnail">
+        <input type="text" id="code" class="form-control my-2 mr-2" placeholder="code">
+        <input class="btn btn-primary my-2" type="submit" value="Enviar!">
+    </form>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    socket.on('products', data => {
+        render(data);
+    });
+
+    // funçao que renderiza as mensagens
+    function render(products) {
+        document.getElementById("products").innerHTML = "";
+        products.forEach(product => {
+            var html =
+                `<div>
+                <h2>${product.title} (${product.id})</h2>
+                <p>${product.description}</p>
+                <p>R$${product.price}</p>
+                <p>Estoque: ${product.stock}</p>
+                <p>SKU: ${product.code}</p>
+                <p>Thumbnail: ${product.thumbnail}</p>
+                </div>`
+            // faz o get  pelo ID e insere o html
+            document.getElementById("products").innerHTML += html;
+        });
+    }
+
+    // Cria uma nova mensagem e a envia ao servidor
+    function addProduct(e) {
+        var product = {
+            title: document.getElementById('title').value.trim(),
+            description: document.getElementById('description').value.trim(),
+            price: document.getElementById('price').value.trim(),
+            thumbnail: document.getElementById('thumbnail').value.trim(),
+            stock: document.getElementById('stock').value.trim(),
+            code: document.getElementById('code').value.trim(),
+        };
+        console.log(product);
+        socket.emit("new-product", product);
+        document.getElementById('title').value = '';
+        document.getElementById('description').value = '';
+        document.getElementById('price').value = '';
+        document.getElementById('thumbnail').value = '';
+        document.getElementById('stock').value = '';
+        document.getElementById('code').value = '';
+        return true; // Solucoinado
+    }
+</script>

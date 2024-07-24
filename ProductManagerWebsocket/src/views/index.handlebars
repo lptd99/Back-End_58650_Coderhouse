@@ -1,0 +1,58 @@
+<div class="container-fluid mt-3">
+    <h1 id="title">Products</h1>
+    <hr>
+    <div id="products"></div>
+    <form class="form-inline" onsubmit="return addMessage(this)" autocomplete="off">
+        <input type="text" id="texto" class="form-control my-2 mr-2" placeholder="Fala ai ...">
+        <input class="btn btn-primary my-2" type="submit" value="Enviar!">
+    </form>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    socket.on('products', data => {
+        render(data);
+    });
+
+    // funçao que renderiza as mensagens
+    function render(products) {
+        document.getElementById("products").innerHTML = "";
+        products.forEach(product => {
+            var html =
+                `<div>
+                <h2>${product.title} (${product.id})</h2>
+                <p>${product.description}</p>
+                <p>R$${product.price}</p>
+                <p>Estoque: ${product.stock}</p>
+                <p>SKU: ${product.code}</p>
+                <p>Thumbnail: ${product.thumbnail}</p>
+                </div>`
+            // faz o get  pelo ID e insere o html
+            /*
+            
+  {
+    "id": 1,
+    "title": "Produto 8",
+    "description": "Descrição 8",
+    "price": 8,
+    "thumbnail": "thumb/8",
+    "stock": 8,
+    "code": "SKU728"
+  },
+            */
+            document.getElementById("products").innerHTML += html;
+        });
+    }
+
+    // Cria uma nova mensagem e a envia ao servidor
+    function addMessage(e) {
+        var mensagem = {
+            text: document.getElementById('texto').value.trim()
+        };
+        socket.emit("new-message", mensagem);
+        document.getElementById('texto').value = '';
+        document.getElementById('texto').focus();
+        return false;
+    }
+</script>

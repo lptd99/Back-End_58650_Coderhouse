@@ -22,17 +22,27 @@ class ProductManager {
       d("Loading products from file...");
       let data = await fs.promises.readFile(this.#path, "utf-8");
       this.#products = JSON.parse(data);
-      this.#lastProductId = this.#products.length;
+      this.#lastProductId = this.#products[this.#products.length - 1].id + 1;
       d("Products loaded from file!");
       d("Products:", data);
       return this.#products;
     } catch (error) {
-      console.log("Error", error);
+      if (error.code === "ENOENT") {
+        d("File at " + this.#path + " does not exist. Creating new file.");
+        await fs.promises.open(this.#path, "w");
+        await fs.promises.writeFile(this.#path, JSON.stringify([], null, 2));
+        await this.loadProductsFromFile();
+      } else {
+        d("Failed to read file:", error);
+      }
     }
   };
 
-  saveProductsToFile = async () => {
+  saveProductsToFile = async (products) => {
     try {
+      if (products) {
+        this.#products = products;
+      }
       d("Saving products to file...");
       d("Products:", this.#products);
       const dataToSave = JSON.stringify(this.#products, null, 2);

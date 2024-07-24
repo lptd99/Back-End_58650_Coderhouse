@@ -1,0 +1,101 @@
+[
+  {
+    "id": 1,
+    "title": "Produto 8",
+    "description": "Descrição 8",
+    "price": 8,
+    "thumbnail": "thumb/8",
+    "stock": 8,
+    "code": "SKU728"
+  },
+  {
+    "id": 2,
+    "title": "Produto 3",
+    "description": "Descrição 3",
+    "price": 3,
+    "thumbnail": "thumb/3",
+    "stock": 3,
+    "code": "SKU723"
+  },
+  {
+    "id": 3,
+    "title": "Produto 10",
+    "description": "Descrição 10",
+    "price": 10,
+    "thumbnail": "thumb/10",
+    "stock": 10,
+    "code": "SKU7210"
+  },
+  {
+    "title": "232323",
+    "description": "23232",
+    "price": "32323",
+    "thumbnail": "32323",
+    "stock": "23232",
+    "code": "232323",
+    "id": 68
+  },
+  {
+    "title": "3214324",
+    "description": "324323333333",
+    "price": "33333",
+    "thumbnail": "333333",
+    "stock": "3333333",
+    "code": "33333333",
+    "id": 69
+  },
+  {
+    "title": "423452134",
+    "description": "43243434",
+    "price": "343434343",
+    "thumbnail": "434343",
+    "stock": "434343",
+    "code": "4343aaaaaaaaa",
+    "id": 70
+  },
+  {
+    "title": "4343243",
+    "description": "2432432",
+    "price": "432432",
+    "thumbnail": "43243",
+    "stock": "43243",
+    "code": "434342432432",
+    "id": 71
+  },
+  {
+    "title": "324123423",
+    "description": "4123432432",
+    "price": "4324324",
+    "thumbnail": "4343342",
+    "stock": "32432432",
+    "code": "43324",
+    "id": 72
+  },
+  {
+    "title": "3232132132",
+    "description": "132132132",
+    "price": "132132132",
+    "thumbnail": "321321321",
+    "stock": "1321321",
+    "code": "31231232",
+    "id": 73
+  },
+  {
+    "title": "3213232",
+    "description": "3232",
+    "price": "3232",
+    "thumbnail": "3232",
+    "stock": "3232",
+    "code": "32",
+    "id": 74
+  },
+  {
+    "title": "Camiseta Paranhos",
+    "description": "Camiseta do nosso herói programador, Deus-gamer Lucas da Silva Paranhos Smith",
+    "price": "99999999999999999999",
+    "thumbnail": "NAOTEMTHUMBNAIL",
+    "stock": "-1",
+    "code": "666007brother",
+    "id": 75
+  }
+]

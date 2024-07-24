@@ -1,0 +1,31 @@
+<div class="container-fluid mt-3">
+    <h1 id="title">Products</h1>
+    <hr>
+    <div id="products"></div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    socket.on('products', data => {
+        render(data);
+    });
+
+    // funçao que renderiza as mensagens
+    function render(products) {
+        document.getElementById("products").innerHTML = "";
+        products.forEach(product => {
+            var html =
+                `<div>
+                <h2>${product.title} (${product.id})</h2>
+                <p>${product.description}</p>
+                <p>R$${product.price}</p>
+                <p>Estoque: ${product.stock}</p>
+                <p>SKU: ${product.code}</p>
+                <p>Thumbnail: ${product.thumbnail}</p>
+                </div>`
+            // faz o get pelo ID e insere o html
+            document.getElementById("products").innerHTML += html;
+        });
+    }
+</script>
