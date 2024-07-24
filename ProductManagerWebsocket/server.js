@@ -1,5 +1,6 @@
-const app = require("./src/app");
+const app = require("./src/app")
 
-app.listen(8080, () => {
-  console.log("Product Manager running on port 8080");
-});
+const port = 8080;
+app.listen(port, () => {
+    console.log(`Servidor iniciado na porta ${port}`);
+  });
